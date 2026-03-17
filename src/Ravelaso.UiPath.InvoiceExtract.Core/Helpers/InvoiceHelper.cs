@@ -7,6 +7,8 @@ using Ravelaso.UiPath.InvoiceExtract.Core.Models;
 using UglyToad.PdfPig;
 using UglyToad.PdfPig.Content;
 using UglyToad.PdfPig.DocumentLayoutAnalysis.ReadingOrderDetector;
+using UglyToad.PdfPig.Fonts.Standard14Fonts;
+using UglyToad.PdfPig.Writer;
 
 namespace Ravelaso.UiPath.InvoiceExtract.Core.Helpers;
 
@@ -70,30 +72,6 @@ public static class InvoiceHelper
         return processor.ProcessInvoice();
     }
 
-    // public static object ProcessInvoice(InvoiceType invoiceType, string pdfPath)
-    // {
-    //     var dataType = InvoiceRegistry.GetDataType(invoiceType);
-    //
-    //     // Find the generic ProcessInvoice<T> method
-    //     var methods =
-    //         typeof(InvoiceHelper).GetMethods(BindingFlags.Public |
-    //                                          BindingFlags.Static);
-    //     var genericMethod = methods.FirstOrDefault(m =>
-    //         m is { Name: nameof(ProcessInvoice), IsGenericMethodDefinition: true } &&
-    //         m.GetParameters().Length == 2 &&
-    //         m.GetParameters()[0].ParameterType.IsGenericType &&
-    //         m.GetParameters()[1].ParameterType == typeof(string));
-    //
-    //     if (genericMethod == null)
-    //         throw new InvalidOperationException("Could not find ProcessInvoice<T> method");
-    //
-    //     var method = genericMethod.MakeGenericMethod(dataType);
-    //     var processor = InvoiceRegistry.Create(invoiceType, dataType);
-    //
-    //     return method.Invoke(null, [processor, pdfPath])
-    //            ?? throw new InvalidOperationException("Failed to process invoice");
-    // }
-
     private static void PopulateByZones<T>(IInvoiceProcessor<T> processor, Page page, int pageNumber)
         where T : IInvoiceData
     {
@@ -133,92 +111,67 @@ public static class InvoiceHelper
         return stringBuilder.ToString();
     }
 
-    // This method is only useful for analysis
-    // public static void AnalyzePdf<T>(string pdfPath, InvoiceType invoiceType) where T : IInvoiceData
-    // {
-    //     var fileName = Path.GetFileNameWithoutExtension(pdfPath);
-    //     var outputFile = Path.Combine(Path.GetDirectoryName(pdfPath)!, $"{fileName}_analyzed.pdf");
-    //     PaintBlocksByDocstrum<T>(pdfPath, outputFile, invoiceType);
-    // }
+    public static void AnalyzePdf<T>(IInvoiceProcessor<T> processor, string pdfPath) where T : IInvoiceData
+    {
+        var fileName = Path.GetFileNameWithoutExtension(pdfPath);
+        var outputFile = Path.Combine(Path.GetDirectoryName(pdfPath)!, $"{fileName}_analyzed.pdf");
+        PaintBlocksByDocstrum(processor, pdfPath, outputFile);
+    }
 
-    // public static void AnalyzePdf(InvoiceType invoiceType, string pdfPath)
-    // {
-    //     var dataType = InvoiceRegistry.GetDataType(invoiceType);
-    //     var method = typeof(InvoiceHelper)
-    //         .GetMethod(nameof(AnalyzePdf), 1, [typeof(string), typeof(InvoiceType)])
-    //         ?.MakeGenericMethod(dataType);
-    //     method?.Invoke(null, [pdfPath, invoiceType]);
-    // }
+    public static void AnalyzePdfsInFolder<T>(Func<IInvoiceProcessor<T>> processorFactory, string folderPath)
+        where T : IInvoiceData
+    {
+        var analyzedFolderPath = Path.Combine(folderPath, "Analyzed");
+        Directory.CreateDirectory(analyzedFolderPath);
 
-    // This method is only useful for analysis
-    // public static void AnalyzePdfsInFolder<T>(string folderPath, InvoiceType invoiceType) where T : IInvoiceData
-    // {
-    //     var analyzedFolderPath = Path.Combine(folderPath, "Analyzed");
-    //     Directory.CreateDirectory(analyzedFolderPath);
-    //
-    //     var pdfFiles = Directory.GetFiles(folderPath, "*.pdf");
-    //     foreach (var file in pdfFiles)
-    //     {
-    //         var fileName = Path.GetFileNameWithoutExtension(file);
-    //         var outputFilePath = Path.Combine(analyzedFolderPath, $"{fileName}_analyzed.pdf");
-    //         PaintBlocksByDocstrum<T>(file, outputFilePath, invoiceType);
-    //     }
-    // }
+        var pdfFiles = Directory.GetFiles(folderPath, "*.pdf");
+        foreach (var file in pdfFiles)
+        {
+            var fileName = Path.GetFileNameWithoutExtension(file);
+            var outputFilePath = Path.Combine(analyzedFolderPath, $"{fileName}_analyzed.pdf");
+            PaintBlocksByDocstrum(processorFactory(), file, outputFilePath);
+        }
+    }
 
-    // public static void AnalyzePdfsInFolder(InvoiceType invoiceType, string folderPath)
-    // {
-    //     var dataType = InvoiceRegistry.GetDataType(invoiceType);
-    //     var method = typeof(InvoiceHelper)
-    //         .GetMethod(nameof(AnalyzePdfsInFolder), 1, [typeof(string), typeof(InvoiceType)])
-    //         ?.MakeGenericMethod(dataType);
-    //     method?.Invoke(null, [folderPath, invoiceType]);
-    // }
+    private static void PaintBlocksByDocstrum<T>(IInvoiceProcessor<T> processor, string inputFilePath,
+        string outputFilePath)
+        where T : IInvoiceData
+    {
+        using var document = PdfDocument.Open(inputFilePath);
+        var builder = new PdfDocumentBuilder();
+        var font = builder.AddStandard14Font(Standard14Font.Helvetica);
 
-    // This method is only useful for analysis
-    // private static void PaintBlocksByDocstrum<T>(string inputFilePath, string outputFilePath, InvoiceType invoiceType)
-    //     where T : IInvoiceData
-    // {
-    //     using var document = PdfDocument.Open(inputFilePath);
-    //     var builder = new PdfDocumentBuilder();
-    //     var font = builder.AddStandard14Font(Standard14Font.Helvetica);
-    //     var processor = InvoiceRegistry.Create<T>(invoiceType);
-    //
-    //     // Get the configured word extractor
-    //     var extractorConfig = processor.GetWordExtractorConfiguration();
-    //     var extractor = extractorConfig.GetExtractor();
-    //
-    //     // Get the configured page segmenter
-    //     var segmenterConfig = processor.GetPageSegmenterConfiguration();
-    //     var segmenter = segmenterConfig.GetSegmenter();
-    //
-    //     var pageCount = document.NumberOfPages;
-    //
-    //     // Process each page
-    //     for (var pageNum = 1; pageNum <= pageCount; pageNum++)
-    //     {
-    //         var page = document.GetPage(pageNum);
-    //         var pageBuilder = builder.AddPage(document, pageNum);
-    //         pageBuilder.SetStrokeColor(0, 255, 0);
-    //
-    //         // Extract words and create blocks for this page
-    //         var letters = page.Letters;
-    //         var words = extractor.GetWords(letters);
-    //         var blocks = segmenter.GetBlocks(words);
-    //         var orderedTextBlocks = Renderer.Get(blocks);
-    //
-    //         // Paint each block with its zone number (zones reset per page)
-    //         foreach (var block in orderedTextBlocks)
-    //         {
-    //             var bbox = block.BoundingBox;
-    //             pageBuilder.DrawRectangle(bbox.BottomLeft, bbox.Width, bbox.Height);
-    //             pageBuilder.AddText(block.ReadingOrder.ToString(), 8, bbox.TopLeft, font);
-    //         }
-    //     }
-    //
-    //     var fileBytes = builder.Build();
-    //     File.WriteAllBytes(outputFilePath, fileBytes);
-    //     Console.WriteLine($@"Analyzed successfully: {Path.GetFileName(inputFilePath)}");
-    // }
+        var extractorConfig = processor.GetWordExtractorConfiguration();
+        var extractor = extractorConfig.GetExtractor();
+
+        var segmenterConfig = processor.GetPageSegmenterConfiguration();
+        var segmenter = segmenterConfig.GetSegmenter();
+
+        var pageCount = document.NumberOfPages;
+
+        for (var pageNum = 1; pageNum <= pageCount; pageNum++)
+        {
+            var page = document.GetPage(pageNum);
+            var pageBuilder = builder.AddPage(document, pageNum);
+            pageBuilder.SetStrokeColor(0, 255, 0);
+
+            var letters = page.Letters;
+            var words = extractor.GetWords(letters);
+            var blocks = segmenter.GetBlocks(words);
+            var orderedTextBlocks = Renderer.Get(blocks);
+
+            foreach (var block in orderedTextBlocks)
+            {
+                var bbox = block.BoundingBox;
+                pageBuilder.DrawRectangle(bbox.BottomLeft, bbox.Width, bbox.Height);
+                pageBuilder.AddText(block.ReadingOrder.ToString(), 8, bbox.TopLeft, font);
+            }
+        }
+
+        var fileBytes = builder.Build();
+        File.WriteAllBytes(outputFilePath, fileBytes);
+        Console.WriteLine($@"Analyzed successfully: {Path.GetFileName(inputFilePath)}");
+    }
 
     private static LayoutType DetectLayout(IEnumerable<Page> pages, LayoutConfiguration config)
     {

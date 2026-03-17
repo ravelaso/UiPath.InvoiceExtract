@@ -18,7 +18,7 @@ public class ExtractionTests
 
 
     [Fact]
-    public void ExtractCjibInvoice_ShouldExtractData()
+    public void ExtractExampleInvoice_ShouldExtractData()
     {
         // Arrange
         var activity = new ExtractExampleInvoiceInvoice()
@@ -37,6 +37,14 @@ public class ExtractionTests
 
         // Log the extracted data
         LogAllProperties(_testOutputHelper, exampleData);
+    }
+
+    [Fact]
+    public void AnalyzeExampleInvoice()
+    {
+        var exampleFile = GetTestInvoicePath("example.pdf");
+
+        InvoiceHelper.AnalyzePdf(new ExampleProcessor(), exampleFile);
     }
 
 }
