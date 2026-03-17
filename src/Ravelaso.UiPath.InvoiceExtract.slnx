@@ -1,0 +1,6 @@
+<Solution>
+  <Project Path="../example/Example/Example.csproj" />
+  <Project Path="Ravelaso.UiPath.InvoiceExtract.Core/Ravelaso.UiPath.InvoiceExtract.Core.csproj" />
+  <Project Path="Ravelaso.UiPath.InvoiceExtract.Generators/Ravelaso.UiPath.InvoiceExtract.Generators.csproj" />
+  <Project Path="Ravelaso.UiPath.InvoiceExtract.Packaging/Ravelaso.UiPath.InvoiceExtract.Packaging.csproj" />
+</Solution>
