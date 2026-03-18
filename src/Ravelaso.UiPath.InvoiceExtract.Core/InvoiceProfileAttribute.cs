@@ -1,14 +1,9 @@
 namespace Ravelaso.UiPath.InvoiceExtract.Core;
 
 [AttributeUsage(AttributeTargets.Class, AllowMultiple = false, Inherited = false)]
-public sealed class InvoiceProfileAttribute : Attribute
+public sealed class InvoiceProfileAttribute(string key) : Attribute
 {
-    public InvoiceProfileAttribute(string key)
-    {
-        Key = key;
-    }
-
-    public string Key { get; }
+    public string Key { get; } = key;
 
     public string? DisplayName { get; init; }
 }
