@@ -1,0 +1,35 @@
+name: Publish Nuget Template
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    types:
+      - closed
+    branches: ["main"]
+
+jobs:
+  if_merged:
+    if: github.event.pull_request.merged == true || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '6.x'
+
+      - name: Configure NuGet sources
+        run: |
+          dotnet nuget add source https://pkgs.dev.azure.com/uipath/Public.Feeds/_packaging/UiPath-Official/nuget/v3/index.json -n UiPath-Official
+
+      - name: Restore dependencies
+        run: dotnet restore
+        
+      - name: Build project
+        run: dotnet build --configuration Release
+
+      - name: Publish package
+        run: dotnet nuget push src/nupkgs/*.nupkg --source 'https://api.nuget.org/v3/index.json' --api-key ${{secrets.NUGET_API_KEY}}
