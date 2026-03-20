@@ -29,7 +29,7 @@ jobs:
         run: dotnet restore
         
       - name: Build project
-        run: dotnet build --configuration Release
+        run: dotnet build src/Ravelaso.UiPath.InvoiceExtract.Packaging/Ravelaso.UiPath.InvoiceExtract.Packaging.csproj -c Release
 
       - name: Publish package
         run: dotnet nuget push src/nupkgs/*.nupkg --source 'https://api.nuget.org/v3/index.json' --api-key ${{secrets.NUGET_API_KEY}}
