@@ -17,6 +17,8 @@
         <IncludeBuildOutput>false</IncludeBuildOutput>
         <NoPackageAnalysis>true</NoPackageAnalysis>
         <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+        <PackageReadmeFile>../../README.md</PackageReadmeFile>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
     </PropertyGroup>
 
     <ItemGroup>

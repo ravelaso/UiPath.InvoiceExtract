@@ -1,7 +1,7 @@
 <Solution>
   <Folder Name="/Example/">
-    <Project Path="../example/InvoiceExtract.Example/InvoiceExtract.Example.csproj" Load="false" />
-    <Project Path="../example/Ravelaso.UiPath.InvoiceExtract.Tests/Ravelaso.UiPath.InvoiceExtract.Tests.csproj" Load="false" />
+    <Project Path="../example/InvoiceExtract.Example/InvoiceExtract.Example.csproj"/>
+    <Project Path="../example/Ravelaso.UiPath.InvoiceExtract.Tests/Ravelaso.UiPath.InvoiceExtract.Tests.csproj"/>
   </Folder>
   <Project Path="Ravelaso.UiPath.InvoiceExtract.Core/Ravelaso.UiPath.InvoiceExtract.Core.csproj" />
   <Project Path="Ravelaso.UiPath.InvoiceExtract.Generators/Ravelaso.UiPath.InvoiceExtract.Generators.csproj" />
