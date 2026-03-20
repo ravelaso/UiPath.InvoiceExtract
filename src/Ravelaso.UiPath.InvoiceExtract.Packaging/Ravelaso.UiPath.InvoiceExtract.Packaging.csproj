@@ -1,0 +1,44 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+        <CheckEolTargetFramework>false</CheckEolTargetFramework>
+
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <PackageId>Ravelaso.UiPath.InvoiceExtract</PackageId>
+        <Version>0.0.15</Version>
+        <Authors>Ravelaso</Authors>
+        <Description>Invoice extraction core and source generators for UiPath projects.</Description>
+        <PackageOutputPath>..\nupkgs</PackageOutputPath>
+
+        <IncludeBuildOutput>false</IncludeBuildOutput>
+        <NoPackageAnalysis>true</NoPackageAnalysis>
+        <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Ravelaso.UiPath.InvoiceExtract.Core\Ravelaso.UiPath.InvoiceExtract.Core.csproj"
+                          PrivateAssets="all"
+                          ReferenceOutputAssembly="false" />
+        <ProjectReference Include="..\Ravelaso.UiPath.InvoiceExtract.Generators\Ravelaso.UiPath.InvoiceExtract.Generators.csproj"
+                          PrivateAssets="all"
+                          ReferenceOutputAssembly="false" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\Ravelaso.UiPath.InvoiceExtract.Core\bin\$(Configuration)\net6.0\Ravelaso.UiPath.InvoiceExtract.Core.dll"
+              Pack="true"
+              PackagePath="lib/net6.0" />
+        <None Include="..\Ravelaso.UiPath.InvoiceExtract.Generators\bin\$(Configuration)\netstandard2.0\Ravelaso.UiPath.InvoiceExtract.Generators.dll"
+              Pack="true"
+              PackagePath="analyzers/dotnet/cs" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="PdfPig" Version="0.1.13" />
+    </ItemGroup>
+
+</Project>
