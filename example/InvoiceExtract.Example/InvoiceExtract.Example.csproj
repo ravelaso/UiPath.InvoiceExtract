@@ -14,7 +14,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Ravelaso.UiPath.InvoiceExtract" Version="0.0.17" />
+        <PackageReference Include="Ravelaso.UiPath.InvoiceExtract" Version="0.0.18" />
         <PackageReference Include="System.Activities.ViewModels" Version="1.0.0-20250124.2" PrivateAssets="All"/>
         <PackageReference Include="UiPath.Activities.Api" Version="24.10.1" PrivateAssets="All"/>
         <PackageReference Include="UiPath.Workflow" Version="6.0.0-20240401-07" PrivateAssets="All"/>

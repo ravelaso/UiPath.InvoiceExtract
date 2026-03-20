@@ -9,7 +9,7 @@
 
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageId>Ravelaso.UiPath.InvoiceExtract</PackageId>
-        <Version>0.0.17</Version>
+        <Version>0.0.18</Version>
         <Authors>Ravelaso</Authors>
         <Description>Invoice Extraction framework for .NET / UiPath Studio.</Description>
         <PackageOutputPath>..\nupkgs</PackageOutputPath>
@@ -24,7 +24,7 @@
     <ItemGroup>
         <None Include="..\..\README.md" Pack="true" PackagePath="" />
     </ItemGroup>
-    
+
     <ItemGroup>
         <ProjectReference Include="..\Ravelaso.UiPath.InvoiceExtract.Core\Ravelaso.UiPath.InvoiceExtract.Core.csproj"
                           PrivateAssets="all"
