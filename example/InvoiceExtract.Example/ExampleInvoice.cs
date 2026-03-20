@@ -28,7 +28,7 @@ public class ExampleProcessor : BaseInvoiceProcessor<ExampleData>
 {
     public override int[] Zones { get; } =
         [5,6,7, 55];
-    
+
     public override PageSegmenterConfiguration GetPageSegmenterConfiguration()
     {
         return new DocstrumConfiguration(
@@ -82,7 +82,7 @@ public class ExampleProcessor : BaseInvoiceProcessor<ExampleData>
         var customerIdMatch = Regex.Match(text, @"CUSTOMER ID:\s*(\S+)", RegexOptions.IgnoreCase);
         if (customerIdMatch.Success)
             Data.CustomerId = customerIdMatch.Groups[1].Value.Trim();
-        
+
     }
 
 

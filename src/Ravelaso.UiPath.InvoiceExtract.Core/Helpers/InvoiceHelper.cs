@@ -111,10 +111,12 @@ public static class InvoiceHelper
         return stringBuilder.ToString();
     }
 
-    public static void AnalyzePdf<T>(IInvoiceProcessor<T> processor, string pdfPath) where T : IInvoiceData
+    public static void AnalyzePdf<T>(IInvoiceProcessor<T> processor, string pdfPath, string? outputPath = null) where T : IInvoiceData
     {
         var fileName = Path.GetFileNameWithoutExtension(pdfPath);
-        var outputFile = Path.Combine(Path.GetDirectoryName(pdfPath)!, $"{fileName}_analyzed.pdf");
+        var outputFile = !string.IsNullOrEmpty(outputPath)
+                         ? outputPath
+                         : Path.Combine(Path.GetDirectoryName(pdfPath) ?? "", $"{fileName}_analyzed.pdf");
         PaintBlocksByDocstrum(processor, pdfPath, outputFile);
     }
 
