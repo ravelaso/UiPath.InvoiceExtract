@@ -26,10 +26,10 @@ jobs:
           dotnet nuget add source https://pkgs.dev.azure.com/uipath/Public.Feeds/_packaging/UiPath-Official/nuget/v3/index.json -n UiPath-Official
 
       - name: Restore Dependencies Core
-        run: dotnet restore src/Ravelaso.UiPath.InvoiceExtract.Packaging/Ravelaso.UiPath.InvoiceExtract.Core.csproj
+        run: dotnet restore src/Ravelaso.UiPath.InvoiceExtract.Core/Ravelaso.UiPath.InvoiceExtract.Core.csproj
 
       - name: Restore Dependencies Generators
-        run: dotnet restore src/Ravelaso.UiPath.InvoiceExtract.Packaging/Ravelaso.UiPath.InvoiceExtract.Generators.csproj
+        run: dotnet restore src/Ravelaso.UiPath.InvoiceExtract.Generators/Ravelaso.UiPath.InvoiceExtract.Generators.csproj
 
       - name: Restore Dependencies Packaging
         run: dotnet restore src/Ravelaso.UiPath.InvoiceExtract.Packaging/Ravelaso.UiPath.InvoiceExtract.Packaging.csproj
