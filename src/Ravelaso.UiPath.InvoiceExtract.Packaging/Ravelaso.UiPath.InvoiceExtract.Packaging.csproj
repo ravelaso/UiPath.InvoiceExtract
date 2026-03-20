@@ -9,16 +9,22 @@
 
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageId>Ravelaso.UiPath.InvoiceExtract</PackageId>
-        <Version>0.0.15</Version>
+        <Version>0.0.16</Version>
         <Authors>Ravelaso</Authors>
-        <Description>Invoice extraction core and source generators for UiPath projects.</Description>
+        <Description>Invoice Extraction framework for .NET / UiPath Studio.</Description>
         <PackageOutputPath>..\nupkgs</PackageOutputPath>
-
         <IncludeBuildOutput>false</IncludeBuildOutput>
         <NoPackageAnalysis>true</NoPackageAnalysis>
         <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/ravelaso/UiPath.InvoiceExtract</PackageProjectUrl>
     </PropertyGroup>
 
+    <ItemGroup>
+        <None Include="..\..\README.md" Pack="true" PackagePath="" />
+    </ItemGroup>
+    
     <ItemGroup>
         <ProjectReference Include="..\Ravelaso.UiPath.InvoiceExtract.Core\Ravelaso.UiPath.InvoiceExtract.Core.csproj"
                           PrivateAssets="all"
