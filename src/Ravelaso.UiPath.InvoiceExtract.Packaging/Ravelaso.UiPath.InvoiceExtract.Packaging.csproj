@@ -9,7 +9,7 @@
 
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageId>Ravelaso.UiPath.InvoiceExtract</PackageId>
-        <Version>0.0.16</Version>
+        <Version>0.0.17</Version>
         <Authors>Ravelaso</Authors>
         <Description>Invoice Extraction framework for .NET / UiPath Studio.</Description>
         <PackageOutputPath>..\nupkgs</PackageOutputPath>
