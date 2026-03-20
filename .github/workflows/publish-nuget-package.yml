@@ -26,7 +26,7 @@ jobs:
           dotnet nuget add source https://pkgs.dev.azure.com/uipath/Public.Feeds/_packaging/UiPath-Official/nuget/v3/index.json -n UiPath-Official
 
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore src/
         
       - name: Build project
         run: dotnet build src/Ravelaso.UiPath.InvoiceExtract.Packaging/Ravelaso.UiPath.InvoiceExtract.Packaging.csproj -c Release
