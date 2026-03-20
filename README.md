@@ -153,7 +153,7 @@ Dependencies:
    - Debug, and you will have a typed object with the data extracted. (Example: myInvoice.TotalAmount, myInvoice.InvoiceNumber)
 
 
-# 2 BaseInvoiceProcessor & Overrides (per-invoice processor behavior)
+# 2a BaseInvoiceProcessor & Overrides (per-invoice processor behavior)
 
 ### What `BaseInvoiceProcessor<T>` helps with
 - `protected T Data` (your typed output record instance)
@@ -205,6 +205,92 @@ Use `InvoiceHelper.AnalyzePdf(...)` to produce a visual PDF with zones:
 - checks `CreateBoundingBoxes()` and detected zones
 - prints zone numbers + text in overlay boxes
 - ideal to tune `Zones`, `MapByZone`, Docstrum settings before production
+
+
+# 2b. Layout-based extraction (multi-template invoices)
+
+Some invoices with the same `InvoiceProfile` may come in slightly different visual layouts.
+For these cases you can use the layout detection API to switch mapping logic at runtime.
+
+### Core build blocks
+
+- `GetLayoutConfiguration()` returns a `LayoutConfiguration` containing one or more `LayoutRule`.
+- `ApplyLayout(LayoutType layoutType)` receives the detected layout and stores it (or adjusts behavior).
+- `MapByZone(...)` can branch on `Data.Layout.Layout` or `layoutType` to handle multiple layout formats.
+
+### Minimal concept example
+
+```csharp
+public record LayoutDemoData : IInvoiceData
+{
+    public string? DocumentName { get; set; }
+    public int DocumentPages { get; set; }
+
+    public LayoutType Layout { get; set; }
+    public string? InvoiceNumber { get; set; }
+    public string? TotalAmount { get; set; }
+}
+
+[InvoiceProfile("DemoLayout", DisplayName = "Extract Demo Layout Invoice")]
+public class LayoutDemoProcessor : BaseInvoiceProcessor<LayoutDemoData>
+{
+    public override int[] Zones => [1, 2, 3];
+
+    public override PageConfiguration GetPageConfiguration() => new()
+    {
+        ZonePages = [PageConfiguration.AllPages],
+        RegexPages = [PageConfiguration.AllPages]
+    };
+
+    public override LayoutConfiguration GetLayoutConfiguration() => LayoutConfiguration.Create(
+        new LayoutRule("Invoice Number", 1, "INV-"),
+        new LayoutRule("Factuurnummer", 2, "FACT")
+    );
+
+    public override void ApplyLayout(LayoutType layoutType)
+    {
+        Data.Layout = layoutType;
+    }
+
+    public override void MapByZone(int zone, string text, int pageNumber)
+    {
+        if (Data.Layout.Layout == 1)
+        {
+            // Layout 1 mapping
+            if (zone == 1) Data.InvoiceNumber = text.Trim();
+            if (zone == 2) Data.TotalAmount = text.Trim();
+        }
+        else if (Data.Layout.Layout == 2)
+        {
+            // Layout 2 mapping uses different zones
+            if (zone == 2) Data.InvoiceNumber = text.Trim();
+            if (zone == 3) Data.TotalAmount = text.Trim();
+        }
+    }
+
+    public override void MapByRegex(string text, int pageNumber)
+    {
+        // optional fallback/validation
+    }
+
+    public override LayoutDemoData ProcessInvoice() => Data;
+}
+```
+
+### What this gives you
+
+- Detect invoice version automatically by scanning page text for layout markers
+- Keep one processor / one activity for related layouts
+- Switch field mapping rules dynamically in `MapByZone`, `MapByRegex`, or `ProcessInvoice`
+- Useful when “same supplier, different template versions” exist
+
+### Quick workflow
+
+1. `InvoiceHelper.ProcessInvoice(processor, pdfPath)` runs layout detection
+2. `ApplyLayout(...)` gets called with `LayoutType.Layout` and `LayoutType.Page`
+3. `MapByZone` / `MapByRegex` use `Data.Layout` to choose mapping variant
+4. `ProcessInvoice()` returns a typed object
+
 
 ---
 
@@ -322,6 +408,7 @@ public sealed class ExtractExampleInvoiceInvoice : CodeActivity
 
 ```
 ---
+
 
 
 
