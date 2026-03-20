@@ -25,6 +25,10 @@ jobs:
         run: |
           dotnet nuget add source https://pkgs.dev.azure.com/uipath/Public.Feeds/_packaging/UiPath-Official/nuget/v3/index.json -n UiPath-Official
 
+      - name: Clean nupkg output
+        run: |
+          rm -rf src/nupkgs
+
       - name: Restore Dependencies Core
         run: dotnet restore src/Ravelaso.UiPath.InvoiceExtract.Core/Ravelaso.UiPath.InvoiceExtract.Core.csproj
 
