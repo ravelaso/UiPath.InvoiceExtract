@@ -218,6 +218,27 @@ For these cases you can use the layout detection API to switch mapping logic at 
 - `ApplyLayout(LayoutType layoutType)` receives the detected layout and stores it (or adjusts behavior).
 - `MapByZone(...)` can branch on `Data.Layout.Layout` or `layoutType` to handle multiple layout formats.
 
+### How to
+
+`LayoutConfiguration` defines how invoice extraction selects a layout by matching document text to key/value rules.
+
+- `UseLayoutDetection`: bool, enables or disables layout-based matching.
+- `Rules`: array of `LayoutRule`.
+  - `Key`: text fragment (e.g. `"Invoice Number"`).
+  - `Value`: optional additional token after key (e.g. `"INV-"`).
+  - `LayoutNumber`: numeric layout ID when matched (e.g. `1`, `2`).
+
+When creating:
+1. identify distinctive keywords for each invoice variant,
+2. set optional value patterns to avoid ambiguity,
+3. assign a unique layout number,
+4. use `LayoutConfiguration.Create(new LayoutRule(...), ...)`,
+5. use `LayoutConfiguration.None` when detection is not needed.
+
+Example semantics:
+- layout `1` if `"Invoice Number"` exists and contains `"INV-"`,
+- layout `2` if `"Factuurnummer"` exists and contains `"FACT"`.
+
 ### Minimal concept example
 
 ```csharp
