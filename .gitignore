@@ -8,3 +8,5 @@ riderModule.iml
 Ravelaso.UiPath.InvoiceExtract.sln.DotSettings.user
 /Output
 Publish
+nupkgs/
+src/nupkgs/
