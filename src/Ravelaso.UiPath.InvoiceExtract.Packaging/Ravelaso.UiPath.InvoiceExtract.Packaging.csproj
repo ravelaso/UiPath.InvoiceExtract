@@ -9,6 +9,7 @@
 
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
         <PackageId>Ravelaso.UiPath.InvoiceExtract</PackageId>
+        <PackageIcon>UI_icon.png</PackageIcon>
         <Version>0.0.18</Version>
         <Authors>Ravelaso</Authors>
         <Description>Invoice Extraction framework for .NET / UiPath Studio.</Description>
@@ -35,6 +36,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <None Include="images\UI_icon.png" Pack="true" PackagePath=""/>
         <None Include="..\Ravelaso.UiPath.InvoiceExtract.Core\bin\$(Configuration)\net6.0\Ravelaso.UiPath.InvoiceExtract.Core.dll"
               Pack="true"
               PackagePath="lib/net6.0" />
