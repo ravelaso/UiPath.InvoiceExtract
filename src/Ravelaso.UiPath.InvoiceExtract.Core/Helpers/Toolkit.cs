@@ -1,12 +1,11 @@
-#nullable enable
 using System.Collections;
 using System.Data;
 using System.Globalization;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
-using Ravelaso.UiPath.InvoiceExtract.Core.Models;
 using Ravelaso.UiPath.InvoiceExtract.Core.Interfaces;
+
 
 namespace Ravelaso.UiPath.InvoiceExtract.Core.Helpers;
 
@@ -18,7 +17,7 @@ namespace Ravelaso.UiPath.InvoiceExtract.Core.Helpers;
 /// </summary>
 public static class Toolkit
 {
-   
+
     /* ────────────────────── generic CSV export ──────────────────── */
 
     /// <summary>Adds instance as a row to <paramref name="table" />.</summary>

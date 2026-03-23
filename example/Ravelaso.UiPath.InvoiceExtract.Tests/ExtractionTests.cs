@@ -1,8 +1,7 @@
 using System.Activities;
 using InvoiceExtract.Example;
-using Ravelaso.UiPath.InvoiceExtract.Core.Helpers;
 using Ravelaso.UiPath.InvoiceExtract.Generated;
-using Ravelaso.UiPath.InvoiceExtract.Tests.Helpers;
+using Ravelaso.UiPath.InvoiceExtract.Core.Helpers;
 using Xunit;
 using Xunit.Abstractions;
 using static Ravelaso.UiPath.InvoiceExtract.Tests.Helpers.TestHelper;
@@ -52,9 +51,11 @@ public class ExtractionTests
     [Fact]
     public void Registration()
     {
-        var x = InvoiceCatalog.All;
-        var y = InvoiceCatalog.Get(InvoiceProfileKey.ExampleInvoice);
-        LogAllProperties(_testOutputHelper, y.ProcessorType);
+        var y = InvoiceCatalog.ExampleInvoice;
+        var exampleFile = GetTestInvoicePath("example.pdf");
+        var processor = y.CreateProcessor();
+        var data = InvoiceHelper.ProcessInvoice(processor, exampleFile);
+        LogAllProperties(_testOutputHelper,data);
     }
 
 }

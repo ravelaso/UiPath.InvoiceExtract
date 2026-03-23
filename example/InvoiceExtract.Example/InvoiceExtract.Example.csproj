@@ -19,5 +19,6 @@
         <PackageReference Include="UiPath.Activities.Api" Version="24.10.1" PrivateAssets="All"/>
         <PackageReference Include="UiPath.Workflow" Version="6.0.0-20240401-07" PrivateAssets="All"/>
     </ItemGroup>
+    
 
 </Project>
