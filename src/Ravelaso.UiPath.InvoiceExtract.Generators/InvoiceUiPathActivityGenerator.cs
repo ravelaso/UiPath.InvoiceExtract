@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace Ravelaso.UiPath.InvoiceExtract.Generators;
@@ -34,7 +35,7 @@ public sealed class InvoiceUiPathActivityGenerator : ISourceGenerator
         foreach (var candidate in receiver.Candidates)
         {
             var semanticModel = compilation.GetSemanticModel(candidate.SyntaxTree);
-            if (semanticModel.GetDeclaredSymbol(candidate) is not INamedTypeSymbol processorSymbol)
+            if (semanticModel.GetDeclaredSymbol(candidate) is not { } processorSymbol)
                 continue;
 
             if (processorSymbol.TypeKind != TypeKind.Class || processorSymbol.IsAbstract)
@@ -98,11 +99,11 @@ public sealed class InvoiceUiPathActivityGenerator : ISourceGenerator
                   {
                       [RequiredArgument]
                       [DisplayName("File Path (Input)")]
-                      public InArgument<string> FilePath { get; set; }
+                      public InArgument<string> FilePath { get; set; } = default!;
 
                       [RequiredArgument]
                       [DisplayName("{{dataTypeName}} (Output)")]
-                      public OutArgument<{{dataTypeName}}> Result { get; set; }
+                      public OutArgument<{{dataTypeName}}> Result { get; set; } = default!;
 
                       protected override void Execute(CodeActivityContext context)
                       {
