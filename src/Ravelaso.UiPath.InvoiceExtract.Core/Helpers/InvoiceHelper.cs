@@ -1,6 +1,7 @@
 // InvoiceHelper.cs
 
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using Ravelaso.UiPath.InvoiceExtract.Core.Interfaces;
 using Ravelaso.UiPath.InvoiceExtract.Core.Models;
@@ -134,6 +135,69 @@ public static class InvoiceHelper
             PaintBlocksByDocstrum(processorFactory(), file, outputFilePath);
         }
     }
+
+    /// <summary>
+    /// Extracts data from all PDF invoices in a specified folder and saves the results in JSON and CSV formats.
+    /// </summary>
+    /// <typeparam name="T">The type of invoice data to extract.</typeparam>
+    /// <param name="processorFactory">A factory function that creates a new invoice processor instance for each file.</param>
+    /// <param name="folderPath">The path to the folder containing PDF invoices.</param>
+    /// <remarks>
+    /// The extracted data is saved in an "Extracted" subfolder within the source folder.
+    /// Results are saved as "extract.json" (JSON array) and "invoices.csv" (CSV format).
+    /// </remarks>
+    public static void ExtractInvoicesInFolder<T>(Func<IInvoiceProcessor<T>> processorFactory, string folderPath)
+        where T : IInvoiceData
+    {
+        var outputDir = Path.Combine(folderPath, "Extracted");
+        Directory.CreateDirectory(outputDir);
+
+        var jsonPath = Path.Combine(outputDir, "extract.json");
+        var csvPath = Path.Combine(outputDir, "invoices.csv");
+
+        // Clean existing output files
+        if (File.Exists(jsonPath)) File.Delete(jsonPath);
+        if (File.Exists(csvPath)) File.Delete(csvPath);
+
+        var table = Toolkit.CreateDataTableFromType(typeof(T));
+        var results = new List<T>();
+
+        foreach (var pdf in Directory.GetFiles(folderPath, "*.pdf"))
+        {
+            var processor = processorFactory();
+            var data = ProcessInvoice(processor, pdf);
+
+            results.Add(data);
+            Toolkit.AddPdfDataRowToDataTable(table, data);
+
+            Console.WriteLine($@"Extracted successfully: {Path.GetFileName(pdf)}");
+        }
+
+        // Save JSON
+        var options = new JsonSerializerOptions { WriteIndented = true };
+        var jsonContent = JsonSerializer.Serialize(results, options);
+        File.WriteAllText(jsonPath, jsonContent);
+
+        // Save CSV
+        Toolkit.SaveDatatableToCsv(table, csvPath);
+    }
+
+    /// <summary>
+    /// Saves the extraction result to a JSON file in the same directory as the original PDF.
+    /// </summary>
+    /// <param name="result">The extracted invoice data.</param>
+    /// <param name="pdfPath">The path to the original PDF file.</param>
+    // public static void SaveResultAsJson(object? result, string pdfPath)
+    // {
+    //     var fileDirectory = Path.GetDirectoryName(pdfPath);
+    //     if (fileDirectory == null) return;
+    //
+    //     var jsonPath = Path.Combine(fileDirectory, "extract.json");
+    //
+    //     var options = new JsonSerializerOptions { WriteIndented = true };
+    //     var jsonContent = JsonSerializer.Serialize(result, options);
+    //     File.WriteAllText(jsonPath, jsonContent);
+    // }
 
     private static void PaintBlocksByDocstrum<T>(IInvoiceProcessor<T> processor, string inputFilePath,
         string outputFilePath)

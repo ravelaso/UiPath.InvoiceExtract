@@ -50,8 +50,13 @@ public static class TestHelper
     }
     private static string FormatValue(object? v, int depth = 0)
     {
-        if (v is null) return "<null>";
-        if (v is string str) return str; // don't treat string as IEnumerable<char>
+        switch (v)
+        {
+            case null:
+                return "<null>";
+            case string str:
+                return str; // don't treat string as IEnumerable<char>
+        }
 
         var vt = v.GetType();
 
